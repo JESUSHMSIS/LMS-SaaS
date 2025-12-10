@@ -1,3 +1,5 @@
+import Header from "@/components/Header";
+
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-[#09090b] text-white overflow-hidden">
@@ -23,6 +25,7 @@ filter%3E%3Crect width='100%25'height='100%25'filter=url
 (%23noiseFilter)/%3E%3c/svg%3E`,
         }}
       ></div>
+      <Header />
     </div>
   );
 };
