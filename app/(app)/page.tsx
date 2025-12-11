@@ -1,5 +1,13 @@
 import Header from "@/components/Header";
-import { BookOpen, LayoutDashboard, Sparkles } from "lucide-react";
+import {
+  BookOpen,
+  LayoutDashboard,
+  Rocket,
+  Sparkles,
+  Crown,
+  Trophy,
+  CheckCircle2,
+} from "lucide-react";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -112,6 +120,93 @@ filter%3E%3Crect width='100%25'height='100%25'filter=url
                 </>
               )}
             </div>
+          </div>
+        </section>
+        <section className="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                tier: "Free",
+                icon: Rocket,
+                color: "emerald",
+                gradient: "from-emerald-500 to-teal-600",
+                borderColor: "border-emerald-500/20",
+                bgGlow: "bg-emerald-500/10",
+                description:
+                  "Inicia en la programacion con los cursos fundamentales",
+                features: [
+                  "Conceptos fundamentales",
+                  "Acceso a la comunidad",
+                  "Proyectos basicos",
+                ],
+              },
+              {
+                tier: "Pro",
+                icon: Crown,
+                color: "violet",
+                gradient: "from-violet-500 to-fuchsia-600",
+                borderColor: "border-violet-500/30",
+                bgGlow: "bg-violet-500/10",
+                description:
+                  "Avanza hacia la programacion avanzada con los cursos avanzados",
+                features: [
+                  "Todo lo de Free",
+                  "Conceptos avanzados",
+                  "Acceso a la comunidad",
+                  "Proyectos avanzados",
+                  "Certificados",
+                ],
+                popular: true,
+              },
+              {
+                tier: "Ultra",
+                icon: Trophy,
+                color: "cyan",
+                gradient: "from-cyan-400 to-blue-600",
+                borderColor: "border-cyan-400/20",
+                bgGlow: "bg-cyan-400/10",
+                description:
+                  "Avanza hacia la programacion profesional con los cursos profesionales",
+                features: [
+                  "Todo lo de Pro",
+                  "Asistente con IA",
+                  "Contenido exclusivo",
+                  "Proyectos profesionales",
+                  "1 a 1 Mentoria",
+                ],
+              },
+            ].map((plan) => (
+              <div
+                key={plan.tier}
+                className={`relative p-8 rounded-2xl ${plan.bgGlow} border ${plan.borderColor} ${plan.popular ? "ring-2 ring-violet-500/50" : ""} transition-all duration-300 hover:scale-[1.02]`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-sm font-semibold">
+                    Mas popular
+                  </div>
+                )}
+                <div
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-r ${plan.gradient} flex items-center justify-center mb-4 shadow-lg`}
+                >
+                  <plan.icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-2">{plan.tier}</h3>
+                <p className="text-zinc-400 text-sm mb-6">{plan.description}</p>
+                <ul className="space-y-3">
+                  {plan.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2 text-sm text-zinc-300"
+                    >
+                      <CheckCircle2
+                        className={`w-4 h-4 ${plan.color === "emerald" ? "text-emerald-400" : plan.color === "violet" ? "text-violet-400" : "text-cyan-400"} `}
+                      />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </section>
       </main>
