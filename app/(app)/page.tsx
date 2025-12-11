@@ -1,6 +1,12 @@
 import Header from "@/components/Header";
+import { BookOpen, LayoutDashboard, Sparkles } from "lucide-react";
+import { currentUser } from "@clerk/nextjs/server";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-const HomePage = () => {
+const HomePage = async () => {
+  const user = await currentUser();
+  const isSignedIn = !!user;
   return (
     <div className="min-h-screen bg-[#09090b] text-white overflow-hidden">
       <div className="fixed inset-0 pointer-events-none">
@@ -26,6 +32,89 @@ filter%3E%3Crect width='100%25'height='100%25'filter=url
         }}
       ></div>
       <Header />
+      <main className="relative z-10">
+        <section className="px-6 lg:px-12 pt-16 pb-24 max-w-7xl mx-auto">
+          <div className="flex flex-col items-center text-center">
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 mb-8 animate-fade-in"
+              style={{ animationDelay: "0.1s" }}
+            >
+              <Sparkles className="w-4 h-4 text-violet-400" />
+              <span className="text-sm text-violet-300">
+                Aprende a programar con proyectos reales
+              </span>
+            </div>
+            <h1
+              className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight leading-[0.95] mb-8 animate-fade-in"
+              style={{ animationDelay: "0.2s" }}
+            >
+              <span className="block text-white">Maestro del codigo</span>
+              <span className="block bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
+                De la forma moderna
+              </span>
+            </h1>
+            <p
+              className="text-lg md:text-xl text-zinc-400 max-w-2xl mb-10 leading-relaxed animate-fade-in"
+              style={{ animationDelay: "0.3s" }}
+            >
+              En Jesús Studio, te ayudamos a aprender a programar con proyectos
+              reales. Nuestros cursos de programación son diseñados para
+              <span className="text-fuchsia-400"> Desarrolladores</span>
+              <span className="text-cyan-400"> Profesionales</span>
+            </p>
+            <div
+              className="flex flex-col sm:flex-row items-center gap-4 animate-fade-in"
+              style={{ animationDelay: "0.4s" }}
+            >
+              {isSignedIn ? (
+                <>
+                  <Link href="/dashboard">
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-lg shadow-violet-600/30 px-8 h-12 text-base font-semibold"
+                    >
+                      <LayoutDashboard className="w-4 h-4 mr-2" />
+                      Ir al Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/dashboard/courses">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="border-zinc-700 bg-white/5 text-white px-8 h-12 text-base hover:bg-white/10 hover:text-white"
+                    >
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Mis cursos
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/pricing">
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-lg shadow-violet-600/30 px-8 h-12 text-base font-semibold"
+                    >
+                      <LayoutDashboard className="w-4 h-4 mr-2" />
+                      Comienza a aprender gratis
+                    </Button>
+                  </Link>
+                  <Link href="/dashboard">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="border-zinc-700 bg-white/5 text-white px-8 h-12 text-base hover:bg-white/10 hover:text-white"
+                    >
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Encuentra un curso
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 };
