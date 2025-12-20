@@ -1,10 +1,30 @@
 "use client";
 
-import { BookOpen, Code2, LayoutDashboard, Play, Sparkles } from "lucide-react";
-import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import {
+  BookOpen,
+  Code2,
+  LayoutDashboard,
+  Menu,
+  Play,
+  Sparkles,
+} from "lucide-react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  useAuth,
+  UserButton,
+} from "@clerk/nextjs";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
+import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 function Logo() {
   return (
     <>
@@ -65,7 +85,7 @@ const Header = () => {
       : [{ href: "/upgrade", label: "Upgrade", icon: Sparkles }]),
   ];
   return (
-    <nav className="relative z-10 flex items-center  px-6 lg:px-12 py-5 max-w-7xl mx-auto">
+    <nav className="relative z-10 flex items-center justify-between px-6 lg:px-12 py-5 max-w-7xl mx-auto">
       <div>
         <SignedIn>
           <Link href="/dashboard" className="flex items-center gap-3 group">
@@ -116,6 +136,93 @@ const Header = () => {
               );
             })}
           </div>
+        </SignedIn>
+      </div>
+      <div className="flex items-center gap-3">
+        <SignedOut>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="md:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="bg-zinc-900 border-zinc-800"
+            >
+              {loggedOutLinks.map((link) => (
+                <DropdownMenuItem key={link.href} asChild>
+                  <Link
+                    href={link.href}
+                    className="text-zinc-300 cursor-pointer"
+                  >
+                    {link.label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <SignInButton mode="modal">
+            <Button
+              variant="ghost"
+              className="text-zinc-400 hover:text-white hover:bg-zinc-800/5"
+            >
+              Iniciar Sesion
+            </Button>
+          </SignInButton>
+          <Link href="/pricing" className="hidden sm:block">
+            <Button className="bg-gradient-to-r from-violet-500 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-600 text-white border-0 shadow-lg shadow-violet-600/25">
+              Comienza a Aprender
+            </Button>
+          </Link>
+        </SignedOut>
+        <SignedIn>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="md:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="bg-zinc-900 border-zinc-800"
+              align="end"
+            >
+              {loggedInLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive =
+                  pathname === link.href ||
+                  (link.href !== "/dashboard" &&
+                    pathname.startsWith(link.href));
+                return (
+                  <DropdownMenuItem key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={cn(
+                        "flex items-center gap-2 cursor-pointer",
+                        isActive ? "text-violet-300" : "text-zinc-300",
+                      )}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {link.label}
+                    </Link>
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <UserButton
+            appearance={{
+              elements: { avatarBox: "w-9 h-9 ring-2 ring-violet-500/20" },
+            }}
+          />
         </SignedIn>
       </div>
     </nav>
