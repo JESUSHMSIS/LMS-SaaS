@@ -10,13 +10,21 @@ import {
   ArrowRight,
   Star,
   Code2,
+  Play,
+  Users,
 } from "lucide-react";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { FEATURED_COURSES_QUERY, STATS_QUERY } from "@/sanity/lib/queries";
+import { sanityFetch } from "@/sanity/lib/live";
 
 const HomePage = async () => {
-  const user = await currentUser();
+  const [{ data: courses }, { data: stats }, user] = await Promise.all([
+    sanityFetch({ query: FEATURED_COURSES_QUERY }),
+    sanityFetch({ query: STATS_QUERY }),
+    currentUser(),
+  ]);
   const isSignedIn = !!user;
   return (
     <div className="min-h-screen bg-[#09090b] text-white overflow-hidden">
@@ -122,6 +130,34 @@ filter%3E%3Crect width='100%25'height='100%25'filter=url
                   </Link>
                 </>
               )}
+            </div>
+            <div
+              className="mt-16 grid grid-cols-3 gap-8 md:gap-16 animate-fade-in"
+              style={{ animationDelay: "0.5s" }}
+            >
+              {[
+                {
+                  value: stats?.courseCount ?? 0,
+                  label: "Courses",
+                  icon: BookOpen,
+                },
+                {
+                  value: stats?.lessonCount ?? 0,
+                  label: "Lessons",
+                  icon: Play,
+                },
+                { value: "10K+", label: "Students", icon: Users },
+              ].map((stat) => (
+                <div key={stat.label} className="flex flex-col items-center">
+                  <div className="flex items-center gap-2 mb-1">
+                    <stat.icon className="w-4 h-4 text-violet-400" />
+                    <span className="text-2xl md:text-3xl font-bold text-white">
+                      {stat.value}
+                    </span>
+                  </div>
+                  <span className="text-sm text-zinc-500">{stat.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
