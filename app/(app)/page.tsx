@@ -18,6 +18,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FEATURED_COURSES_QUERY, STATS_QUERY } from "@/sanity/lib/queries";
 import { sanityFetch } from "@/sanity/lib/live";
+import { CourseCard } from "@/components/courses/CoursesCard";
 
 const HomePage = async () => {
   const [{ data: courses }, { data: stats }, user] = await Promise.all([
@@ -261,7 +262,20 @@ filter%3E%3Crect width='100%25'height='100%25'filter=url
               para que vayas de principiante a estar listo para un trabajo
             </p>
           </div>
-          <div className="grid md:grid-cols3 gap-6"></div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {courses.map((course) => (
+              <CourseCard
+                key={course.slug!.current!}
+                slug={{ current: course.slug!.current! }}
+                title={course.title}
+                description={course.description}
+                tier={course.tier}
+                thumbnail={course.thumbnail}
+                moduleCount={course.moduleCount}
+                lessonCount={course.lessonCount}
+              />
+            ))}
+          </div>
           <div className="text-center mt-10">
             <Link href="/dashboard">
               <Button
