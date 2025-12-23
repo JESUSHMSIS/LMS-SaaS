@@ -10,13 +10,22 @@ import {
   ArrowRight,
   Star,
   Code2,
+  Play,
+  Users,
 } from "lucide-react";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { FEATURED_COURSES_QUERY, STATS_QUERY } from "@/sanity/lib/queries";
+import { sanityFetch } from "@/sanity/lib/live";
+import { CourseCard } from "@/components/courses/CoursesCard";
 
 const HomePage = async () => {
-  const user = await currentUser();
+  const [{ data: courses }, { data: stats }, user] = await Promise.all([
+    sanityFetch({ query: FEATURED_COURSES_QUERY }),
+    sanityFetch({ query: STATS_QUERY }),
+    currentUser(),
+  ]);
   const isSignedIn = !!user;
   return (
     <div className="min-h-screen bg-[#09090b] text-white overflow-hidden">
@@ -123,6 +132,34 @@ filter%3E%3Crect width='100%25'height='100%25'filter=url
                 </>
               )}
             </div>
+            <div
+              className="mt-16 grid grid-cols-3 gap-8 md:gap-16 animate-fade-in"
+              style={{ animationDelay: "0.5s" }}
+            >
+              {[
+                {
+                  value: stats?.courseCount ?? 0,
+                  label: "Courses",
+                  icon: BookOpen,
+                },
+                {
+                  value: stats?.lessonCount ?? 0,
+                  label: "Lessons",
+                  icon: Play,
+                },
+                { value: "10K+", label: "Students", icon: Users },
+              ].map((stat) => (
+                <div key={stat.label} className="flex flex-col items-center">
+                  <div className="flex items-center gap-2 mb-1">
+                    <stat.icon className="w-4 h-4 text-violet-400" />
+                    <span className="text-2xl md:text-3xl font-bold text-white">
+                      {stat.value}
+                    </span>
+                  </div>
+                  <span className="text-sm text-zinc-500">{stat.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
         <section className="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
@@ -225,7 +262,20 @@ filter%3E%3Crect width='100%25'height='100%25'filter=url
               para que vayas de principiante a estar listo para un trabajo
             </p>
           </div>
-          <div className="grid md:grid-cols3 gap-6"></div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {courses.map((course) => (
+              <CourseCard
+                key={course.slug!.current!}
+                slug={{ current: course.slug!.current! }}
+                title={course.title}
+                description={course.description}
+                tier={course.tier}
+                thumbnail={course.thumbnail}
+                moduleCount={course.moduleCount}
+                lessonCount={course.lessonCount}
+              />
+            ))}
+          </div>
           <div className="text-center mt-10">
             <Link href="/dashboard">
               <Button
